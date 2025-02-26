@@ -1,0 +1,23 @@
+{
+  "name": "phonebook",
+  "version": "1.0.0",
+  "description": "phonebook backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/justice1k/fullstackopen2.git"
+  },
+  "author": "justice1k",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/justice1k/fullstackopen2/issues"
+  },
+  "homepage": "https://github.com/justice1k/fullstackopen2#readme",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
