@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/justice1k/fullstackopen2#readme",
   "dependencies": {
-    "express": "^4.21.2"
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "morgan": "^1.10.0"
   }
 }
