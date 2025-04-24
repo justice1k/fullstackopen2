@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/justice1k/fullstackopen2#readme",
   "dependencies": {
+    "dotenv": "^16.5.0",
     "express": "^4.21.2",
     "mongodb": "^6.14.2",
     "mongoose": "^8.13.2",
