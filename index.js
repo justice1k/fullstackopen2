@@ -15,32 +15,22 @@ morgan.token('body', function (req) {
   }
   return '-';
 });
+
 app.use(morgan(':method :url :status :response-time ms - :body'));
 
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({error: 'unknown endpoint'})
+}
 
+const errorHandler = (error, request, response, next) => {
+  console.log(error.message)
+  if(error.name === 'CastError'){
+    return response.status(400).send({error: 'malformatted id'})
+  }
 
-let persons = [
-    { 
-      "id": "1",
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": "2",
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": "3",
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": "4",
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
+  next(error)
+}
+
 
 
 
@@ -50,18 +40,20 @@ app.get('/api/persons', (request, response) => {
     })
 })
 
-app.get('/api/persons/:id', (request, response) => {
-  const id = request.params.id
+app.get('/api/persons/:id', (request, response, next) => {
 
-  // TODO: Handle errors
-
-  Person.findById(id).then(person =>{
-    response.json(person)
+  Person.findById(request.params.id).then(person =>{
+    if(person){
+      response.json(person)
+    }else{
+      response.status(404).end()
+    }
+  }).catch(error => {
+    next(error)
   })
 })
 
 app.post('/api/persons', (request, response) => {
-
 
   const person = new Person({
     name: request.body.name,
@@ -69,7 +61,6 @@ app.post('/api/persons', (request, response) => {
   })
 
   if(!person.name || !person.number){
-    
     return response.status(400).json({ 
       error: 'name or number missing' 
     })
@@ -79,13 +70,19 @@ app.post('/api/persons', (request, response) => {
   .then(savedPerson => {
     response.json(savedPerson)
   })
-
 })
 
-app.delete('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  persons = persons.filter(person => person.id !== id)
-  response.status(204).end()
+app.delete('/api/persons/:id', (request, response,next) => {
+  
+  Person.findByIdAndDelete(request.params.id)
+  .then(result => {
+    console.log('deleting...')
+    console.log(result)
+    response.status(204).end()
+  })
+  .catch( error => {
+    next(error)
+  })
 })
 
 
@@ -99,6 +96,10 @@ app.get('/info', (request, response) => {
         `     
     )
 })
+
+app.use(unknownEndpoint)
+
+app.use(errorHandler)
 
 
 
